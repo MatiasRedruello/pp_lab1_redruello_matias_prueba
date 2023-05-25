@@ -3,8 +3,9 @@ def examen_app():
     while True:
         match ():
             case "1":
-                pass
+                lista_jugador_posicion()
             case "2":
+                estadisticas_jugador()
                 pass
             case "3":
                 pass
