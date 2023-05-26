@@ -137,5 +137,30 @@ def salon_de_la_fama(lista:list,texto:str)->str:
     mensaje_final = mensaje_nombre + mensaje_final            
               
     return mensaje_final                 
-
 # salon_de_la_fama(lista_dream_team,"Magic Johnson")
+"7,8,9,13,14,19)"
+def jugador_mayor_cantidad(lista:list,texto:str)->str:
+    # hacer un menu con las opciones
+    """
+    Parametros:
+        Lista: Lista con  datos de los jugadores.
+        Texto: la estadistica que se requiere
+    Funcionamiento: 
+        A partir de la estadistica deseada se busca el jugador que mas haya logrado para dicho pedido.
+        Se muestra dicho jugador de mayor estadistica con el valor de la misma
+    Retorna: 
+        Mensaje final
+    """
+    mayor_cantidad = 0
+    nombre_mayor_cantidad = ""
+    for i in range(len(lista)):
+        for llave,dato in lista[i]["estadisticas"].items():
+            if llave == texto and  mayor_cantidad < dato:                        
+                mayor_cantidad = dato
+                nombre_mayor_cantidad = lista[i]["nombre"]
+    mensaje = "El jugador {} es el mas destacado en la categoria {} y dicho valor es de {}".format(nombre_mayor_cantidad,
+                                                                                   texto,
+                                                                                   mayor_cantidad)
+    return mensaje
+                    
+# jugador_mayor_cantidad(lista_dream_team,"temporadas")
