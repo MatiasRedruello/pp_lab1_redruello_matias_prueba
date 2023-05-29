@@ -1,4 +1,4 @@
-from funcion_base import *
+from funciones_base import *
 import re
 
 "1)"
@@ -22,8 +22,7 @@ def lista_jugador_posicion(lista:list)->list:
             return errores(-4)
     else:
         return errores(-1)
-    
-# print(lista_jugador_posicion(lista_dream_team))
+
 "2)"
 lista_vacia = []
 def estadisticas_jugador(lista:list,valor:int)->list:
@@ -39,7 +38,7 @@ def estadisticas_jugador(lista:list,valor:int)->list:
         Una lista con el jugadorque se busca.
     """
     valor = str(valor)
-    if re.match(r"^[0-9]+$",valor):
+    if re.match(r"^[.0-9]+$",valor):
         valor = int(valor)
         if len(lista) > 0:
             if type(lista[0]) == dict:
@@ -68,7 +67,6 @@ def estadisticas_jugador(lista:list,valor:int)->list:
     else:
         return errores(-2)   
          
-# print(estadisticas_jugador(lista_dream_team,15))
 "3)"
 def crear_csv(lista:list):
     """
@@ -95,13 +93,11 @@ def crear_csv(lista:list):
             return errores(-1) 
     else:
         return errores(-4)
-   
-# print(crear_csv((estadisticas_jugador(lista_dream_team,"0"))))
 "4)"
 def logros_jugador(lista:list,texto:str)->str:
     """
     Parametros:
-        Lista: Lista con lso datos de los jugadores.
+        Lista: Lista con los datos de los jugadores.
         Texto: El jugador a buscar.
     Funcionamiento: 
         Comparo el nombre que me ingresa con los de la lista, busco sus logros y los guardo en una variable
@@ -137,10 +133,8 @@ def logros_jugador(lista:list,texto:str)->str:
     else:
         return errores(-6) 
     return mensaje_final    
-# print(logros_jugador(lista_dream_team,"Christian Laettner"))
 "7,8,9,13,14,16,17,19)"
 def jugador_mayor_menor_cantidad(lista:list,categoria:str,extremo:str)->list:
-    # hacer un menu con las opciones
     """
     Parametros:
         Lista: Lista con  datos de los jugadores.
@@ -202,17 +196,13 @@ def jugador_mayor_menor_cantidad(lista:list,categoria:str,extremo:str)->list:
         return errores(-1)
 
     return lista_final
-# print(jugador_mayor_menor_cantidad(lista_dream_team,"logros","menor"))            
-# print(jugador_mayor_menor_cantidad(lista_dream_team,"temporadas","mayor"))
-# print(jugador_mayor_menor_cantidad(lista_dream_team,"promedio puntos por partido","mayor"))
-
 "5,10,11,12,15,18)"
 def buscar_y_comparar(lista:list,categoria:str,valor:int)->list:
     """
     Paramtros: 
         Lista:lista con los datos de los jugadores.
         Categoria: Dentro del diccionario estadisticas la estadistica (key) quiero usar.
-        Valor: Dato numerico ingresado por el usuario,tambien puede ser puesto por defecto si es necesario.
+        Valor: Dato numerico ingresado por el usuario
     Funcionamiento: 
         Dentro del diccionario categoria y en la key deseada accedo al valor,comparo con el dato ingresado por el usuario
          y guardo en una lista el diccionario del los jugadores por arriba del valor ingresado.
@@ -227,8 +217,8 @@ def buscar_y_comparar(lista:list,categoria:str,valor:int)->list:
             if len(validacion_re) > 0: 
                 if validacion_re[0] in lista_categoria:
                     valor = str(valor)
-                    if re.match(r"^[0-9]+$",valor):
-                        valor = int(valor) 
+                    if re.match(r"^[.0-9]+$",valor):
+                        valor = float(valor) 
                         for i in range(len(lista)): 
                             llamado = jugador_mayor_menor_cantidad(lista_dream_team,categoria,"mayor")
                             for i_dos in range(len(llamado)):
@@ -249,8 +239,6 @@ def buscar_y_comparar(lista:list,categoria:str,valor:int)->list:
         return errores(-1)
     
     return lista_jugadores_arriba_valor
-# print(buscar_y_comparar(lista_dream_team,"promedio puntos por partido",24))
-
 "6)"
 def salon_de_la_fama(lista:list,jugador:str)->str:
     """
@@ -290,9 +278,6 @@ def salon_de_la_fama(lista:list,jugador:str)->str:
         return errores(-1)    
                 
     return mensaje_final                 
-# print(salon_de_la_fama(lista_dream_team,"Christian Laettner"))
-     
-
 "16)"
 def remover_menor(lista:list,comparar:list)->list:
     """
@@ -322,7 +307,6 @@ def remover_menor(lista:list,comparar:list)->list:
     else:
         errores(-1)
     return lista_final
-# print(remover_menor(lista_dream_team,jugador_mayor_menor_cantidad(lista_dream_team,"promedio puntos por partido","mayor")))
 
 def calcular_promedio(lista:list,categoria:str)->str:
     """
@@ -339,7 +323,6 @@ def calcular_promedio(lista:list,categoria:str)->str:
     contador_datos = 0
     mensaje = ""
     nombre = " "
-
     validacion_re = re.findall(r"^([a-zA-Z]+(?: [a-zA-Z]+){0,3})$",categoria)
     if len(lista) > 0:
         if type(lista[0]) == dict:
@@ -366,10 +349,8 @@ def calcular_promedio(lista:list,categoria:str)->str:
     else:
         return errores(-1)
     return mensaje
-# print(calcular_promedio(remover_menor(lista_dream_team,jugador_mayor_menor_cantidad(lista_dream_team,"promedio puntos por partido","menor")),"promedio puntos por partido"))
-
 "20)"
-def ordenados_posicion_cancha(lista:list,manera):
+def ordenados_posicion_cancha(lista:list,manera:str)->str:
     """
     Parametros:
         Lista: Es una lista de diccionarios.
@@ -428,5 +409,3 @@ def ordenados_posicion_cancha(lista:list,manera):
         return errores(-1)
 
     return mensaje
-
-# print(ordenados_posicion_cancha(buscar_y_comparar(lista_dream_team,"porcentaje tiros de campo",51),"asc"))
