@@ -20,35 +20,45 @@ def ordenar(lista:list,categoria:str,manera:str)->list:
         Una lista de diccionarios ordenada
     """
     validacion_re = re.findall(r"^([a-zA-Z]+(?: [a-zA-Z]+){0,3})$",categoria)
-    if len(lista) > 0:
-        if type(lista[0]) == dict:
-            if len(validacion_re) > 0: 
-                if validacion_re[0] in lista_categoria:
-                    categoria = categoria.replace(" ","_")    
-                    if re.match(r"^(asc|desc)$",manera,re.IGNORECASE):
-                        rango_a = len(lista)
-                        flag_swap = True
-                        while flag_swap:
-                            flag_swap = False
-                            rango_a = rango_a - 1
-                            for indice_a in range(rango_a):
-                                if manera == "asc" and lista[indice_a]["estadisticas"][categoria] < lista[indice_a+1]["estadisticas"][categoria] \
-                                    or manera == "desc" and lista[indice_a]["estadisticas"][categoria] > lista[indice_a+1]["estadisticas"][categoria]:
-                                    aux = lista[indice_a]
-                                    lista[indice_a] = lista[indice_a+1]
-                                    lista[indice_a+1] = aux
-                                    flag_swap = True
-                    else:
-                        return errores(-7)
-                else:
-                    return errores(-5)
-            else:
-                return errores(-1)
-        else:
-            return errores(-4)
-    else:
-        return errores(-1)
-    return lista
+    validacion = True #Puedo usar validacion en sustitucion de flag swap ya que cumple la msima funcion 
+    rango_a = len(lista)
+   
+    # Verifica si alguna lista esta vacia.Findall devuelve una lista,si no encuentra nada la devuelve vacia   
+    if validar_lista_vacia(lista) or validar_lista_vacia(validacion_re) :
+        respuesta = LEYENDA_LISTA_VACIA
+        validacion = False
+
+    # Verifica que la categoria este en la lista.
+    if validar_que_este_en_la_lista(validacion_re,lista_estadisticas):
+        respuesta = LEYENDA_CATEGORIA_FUERA_DE_LA_LISTA
+        validacion = False
+
+    # Verifico que se ingrese ascendente o descendente.   
+    if not validar_manera_asc_o_desc(manera):
+        respuesta = LEYENDA_NO_INGRIESO_ASCENDENTE_O_DESCENDENTE
+        validacion = False
+
+    #validar que la herencia para la variable lista lista no sea un str
+    if validar_tipo_lista(lista):
+        respuesta = LEYENDA_HERENCIA_FUERA_DE_RANGO
+        validacion = False 
+
+    #Ordeno la lista
+    if validacion:
+        categoria = categoria.replace(" ","_")    
+        while validacion:
+            validacion = False
+            rango_a = rango_a - 1
+            for indice_a in range(rango_a):
+                if manera == "asc" and lista[indice_a]["estadisticas"][categoria] < lista[indice_a+1]["estadisticas"][categoria] \
+                    or manera == "desc" and lista[indice_a]["estadisticas"][categoria] > lista[indice_a+1]["estadisticas"][categoria]:
+                    aux = lista[indice_a]
+                    lista[indice_a] = lista[indice_a+1]
+                    lista[indice_a+1] = aux
+                    validacion = True
+        respuesta = lista
+    return respuesta
+# print(ordenar(lista_dream_team,"robos totales","asc"))
 def mostrar(lista:list,categoria:str)->str:
     """
     Parametros:
@@ -56,47 +66,46 @@ def mostrar(lista:list,categoria:str)->str:
         Categoria: Dentro del diccionario estadisticas la estadistica (key) quiero usar.
     Funcionamiento: 
         Itero sobre la lista y creo un diccionario que contenga como key el nombre y como clave valor
-          numerico de categoria deseada.
+        numerico de categoria deseada.
         Armo un mensaje que tiene el Top del/los jugador/es, nombre y valor numerico
     Retorna: 
         Un mensjae que tiene un str
     """
     diccionario = {}
+    contador = 1
     mensaje = ""
+    validacion = True
     validacion_re = re.findall(r"^([a-zA-Z]+(?: [a-zA-Z]+){0,3})$",categoria)
-    if len(lista) > 0:
-        if type(lista[0]) == dict:
-            if len(validacion_re) > 0: 
-                if validacion_re[0] in lista_categoria:
-                    categoria = categoria.replace(" ","_")     
-                    for i in range(len(lista)):
-                        if categoria in lista[i]:
-                            for jugador in lista:       
-                                diccionario[jugador["nombre"]] = jugador[categoria]
-                            for key,dato in diccionario.items():
-                                mensaje = "{}:\n".format(key)
-                                for texto in dato:
-                                    mensaje = mensaje +  "               ° {}\n".format(texto)             
-                        else:      
-                            for jugador in lista:       
-                                diccionario[jugador["nombre"]] = jugador["estadisticas"][categoria]
-                            mensaje = "{}\n".format(categoria)
-                            mensaje = mensaje + "Puesto | Los jugadores son:\n"
 
-                            contador = 1
-                            for key,dato in diccionario.items():
-                                mensaje = mensaje + "  {})     {} | {}.\n".format(contador,key,dato)
-                                contador += 1
-                else:
-                    return errores(-5) 
-            else:
-                return errores(-1)  
-        else: 
-            return errores(-4)
-    else:
-        return errores(-1)                 
+    # Verifica si alguna lista esta vacia.Findall devuelve una lista,si no encuentra nada la devuelve vacia   
+    if validar_lista_vacia(lista) or validar_lista_vacia(validacion_re) :
+        respuesta = LEYENDA_LISTA_VACIA
+        validacion = False
 
-    return mensaje
+    # Verifica que la categoria este en la lista.
+    if validar_que_este_en_la_lista(validacion_re,lista_estadisticas):
+        respuesta = LEYENDA_CATEGORIA_FUERA_DE_LA_LISTA
+        validacion = False
+        
+    #validar que la herencia para la variable lista no sea un str
+    if validar_tipo_lista(lista):
+        respuesta = LEYENDA_HERENCIA_FUERA_DE_RANGO
+        validacion = False        
+
+    if validacion:
+        #Primera parte del mensaje
+        categoria = categoria.replace(" ","_")   
+        for jugador in lista:       
+            diccionario[jugador["nombre"]] = jugador["estadisticas"][categoria]
+        mensaje = "{}\n".format(categoria)
+        mensaje = mensaje + "Puesto | El/Los jugador/es son:\n"
+        #Segunda parte del mensaje
+        for key,dato in diccionario.items():
+            mensaje = mensaje + "  {})     {} | {}.\n".format(contador,key,dato)
+            contador += 1                 
+        respuesta = mensaje
+    return respuesta
+# print(mostrar(jugador_mayor_menor_cantidad(lista_dream_team,"robos totales","mayor"),"robos totales"))
 def imprimir(dato:str):
     """
     Parametros: 
@@ -104,7 +113,7 @@ def imprimir(dato:str):
     funcionalidad: 
         Imprime lo que recibe
     """
-    print(dato)
+    return print(dato)
     
 def imprimir_menu_examen():
     """
@@ -149,53 +158,59 @@ def menu_principal_examen()->str:
     resultado = opcion_elegida
 
     return resultado 
-def imprimir_menu_indices():
+def armar_menu_informaivos(lista:list,largo:int)->str:
+    """
+    Parametros:
+        Lista:lista con la que voy a trabajar
+        Largo:Recibe el largo de una lista
+    funcionalidad:
+        Con el indice de la lista itera sobre la lista y arma un menu informativo en relacion a la lista que recibio.
+    Retorno: 
+        Retorna un mensaje tipo str
+    """
+    mensaje_final = ""
+    if lista is lista_nombres:
+        for i in range(largo):
+            mensaje_inicial = "{}. {}\n".format(i,lista[i])
+            mensaje_final += mensaje_inicial
+    else:
+        for i in range(largo):
+            mensaje_inicial = "* {}\n".format(lista[i])
+            mensaje_final += mensaje_inicial        
+
+    return mensaje_final
+def imprimir_menu_indices()->str:
     """
     Parametros:
          No ingresa nada
     funcionalidad:
-         Muesta por consola un menu con opciones
+         Llama a otra funcion para que arme el menu.
     Retorno: 
-         No retorna nada
+         Retorna un mensaje tipo str
     """
-    imprimir("Menú de opciones:")
-    imprimir("0. Michael Jordan")
-    imprimir("1. Magic Johnson")
-    imprimir("2. Larry Bird")
-    imprimir("3. Charles Barkley")
-    imprimir("4. Scottie Pippen")
-    imprimir("5. David Robinson")
-    imprimir("6. Patrick Ewing")
-    imprimir("7. Karl Malone")
-    imprimir("8. John Stockton")
-    imprimir("9. Clyde Drexler")
-    imprimir("10. Chris Mullin")
-    imprimir("11. Christian Laettner")
-
+    return armar_menu_informaivos(lista_nombres,len(lista_nombres))
+         
 def imprimir_menu_estadisticas():
     """
     Parametros:
          No ingresa nada
     funcionalidad:
-         Muesta por consola un menu con opciones
+         Llama a otra funcion para que arme el menu.
     Retorno: 
-         No retorna nada
+         Retorna un mensaje tipo str
     """
-    
-    imprimir("Menú de opciones:")
-    imprimir("temporadas")
-    imprimir("puntos totales")
-    imprimir("promedio puntos por partido")
-    imprimir("rebotes totales")
-    imprimir("promedio rebotes por partido")
-    imprimir("asistencias totales")
-    imprimir("promedio asistencias por partido")
-    imprimir("robos totales")
-    imprimir("bloqueos totales")
-    imprimir("porcentaje tiros de campo")
-    imprimir("porcentaje tiros libres")
-    imprimir("porcentaje tiros triples")
-    imprimir("logros")
+    return armar_menu_informaivos(lista_estadisticas,len(lista_estadisticas))
+
+def imprimir_menu_estadisticas_dos():
+    """
+    Parametros:
+         No ingresa nada
+    funcionalidad:
+         Llama a otra funcion para que arme el menu.
+    Retorno: 
+         Retorna un mensaje tipo str
+    """
+    return armar_menu_informaivos(lista_estadisticas,len(lista_estadisticas)-1)
 
 def imprimir_menu_posiciones():
     """
@@ -206,10 +221,12 @@ def imprimir_menu_posiciones():
     Retorno: 
          No retorna nada
     """
-    imprimir("Guia por si desconose las posiciones\n")
-    imprimir("1 - Base")
-    imprimir("2 - Escolta")
-    imprimir("3 - Alero")
-    imprimir("4 - Ala-Pivot")
-    imprimir("5 - Pivot")
+    mensaje_uno = "                        GUIA POR SI DESCONOCE LAS POSICIONES DEL BASQUETBOL\n"
+    mensaje_dos ="1 - Base\n2 - Escolta\n3 - Alero\n4 - Ala-Pivot\n5 - Pivot"
 
+  
+    return mensaje_uno + mensaje_dos
+
+  
+
+    

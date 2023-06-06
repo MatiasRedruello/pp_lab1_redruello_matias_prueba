@@ -12,56 +12,78 @@ def examen_app():
     while True:
         match menu_principal_examen():
             case "0":
-                imprimir(lista_jugador_posicion(lista_dream_team)) 
+                    jugador_posicion = lista_jugador_posicion(lista_dream_team)
+                    imprimir(jugador_posicion) 
+
             case "1":
                     imprimir(imprimir_menu_indices())
-                    respuesta_uno_dos = pregunta("¿Que jugador desea seleccionar?")
-                    estadisticas_jugador(lista_dream_team,respuesta_uno_dos)
+                    jugador_seleccionado = pregunta("¿Que jugador desea seleccionar?")
+                    estadisticas_jugadores(lista_dream_team,jugador_seleccionado)
                     flag = True
+
             case "2":
                     if flag == True:
                         imprimir(imprimir_menu_indices())
-                        imprimir(crear_csv(estadisticas_jugador(lista_dream_team,respuesta_uno_dos)))
+                        jugador_a_guardar = estadisticas_jugadores(lista_dream_team,jugador_seleccionado)
+                        csv_del_jugador = crear_csv(jugador_a_guardar)
+                        imprimir(csv_del_jugador)
                     else:
-                        imprimir("No se puede ingresar a esta seccion sin pasar por el punto 2.Gracias")
+                        imprimir("No se puede ingresar a esta seccion sin pasar por el punto 1.Gracias")
+
             case "3":
                     imprimir(imprimir_menu_indices())
-                    imprimir(logros_jugador(lista_dream_team,
-                                            pregunta("Por favor ingrese el nombre del jugador le intereza.")))
+                    respuesta_jugador = pregunta("Por favor ingrese el nombre del jugador le intereza.")
+                    logros_del_jugador = logros_jugador(lista_dream_team,respuesta_jugador)
+                    imprimir(logros_del_jugador)
+
             case "4":
-                    imprimir(mostrar(ordenar(buscar_y_comparar(lista_dream_team,"promedio puntos por partido",0)
-                                                                                ,"promedio puntos por partido",
-                                                                                "asc"),"promedio puntos por partido"))
+                    tipo_de_estadistica = "promedio puntos por partido"
+                    forma_de_ordenar = "asc"
+                    resultado_busqueda = buscar_y_guarda(lista_dream_team,tipo_de_estadistica,0)
+                    jugadores_ordenados = ordenar(resultado_busqueda,tipo_de_estadistica,forma_de_ordenar)
+                    formato_armado = mostrar(jugadores_ordenados,"promedio puntos por partido")
+                    imprimir(formato_armado)
+
             case "5":
                     imprimir(imprimir_menu_indices())
-                    imprimir(salon_de_la_fama(lista_dream_team,pregunta("¿Que jugado elige?")))
+                    jugador_elegido = pregunta("¿Que jugado elige?")
+                    imprimir(salon_de_la_fama(lista_dream_team,jugador_elegido))
 
                 
             case "6":
                     imprimir(imprimir_menu_estadisticas())
-                    respuesta_uno_seis = pregunta("¿Que estadistica desea elegir?")
-                    respuesta_dos_seis = pregunta("¿Quiere buscar al mejor(mayor) o al peor(menor)?")
-                    imprimir(mostrar(jugador_mayor_menor_cantidad(lista_dream_team,respuesta_uno_seis,respuesta_dos_seis),
-                                     respuesta_uno_seis)) 
+                    respuesta_estadistica = pregunta("¿Que estadistica desea elegir?")
+                    respuesta_mejor_o_peor = pregunta("¿Quiere buscar al mejor(mayor) o al peor(menor)?")
+                    Jugador = jugador_mas_menos_haya_logrado(lista_dream_team,respuesta_estadistica,respuesta_mejor_o_peor)
+                    formato_armado = mostrar(Jugador,respuesta_estadistica)
+                    imprimir(formato_armado) 
+
             case "7":
-                    imprimir(imprimir_menu_estadisticas())
-                    respuesta_uno_siete = pregunta("¿Que estadistica desea elegir?")
-                    respuesta_dos_siete = pregunta("¿Cual es el valor que desea ingresar?")
-                    respuesta_tres_siete = pregunta("¿Como los quiere ordenados de forma ascendente(asc) o descendente(desc)?")
-                    imprimir(mostrar(ordenar(buscar_y_comparar(lista_dream_team,respuesta_uno_siete,respuesta_dos_siete),
-                                                               respuesta_uno_siete,
-                                                               respuesta_tres_siete),respuesta_uno_siete))                                        
+                    imprimir(imprimir_menu_estadisticas_dos())
+                    tipo_de_estadistica = pregunta("¿Que estadistica desea elegir?")
+                    valor_elegido = pregunta("¿Cual es el valor que desea ingresar?")
+                    forma_de_ordenar = pregunta("¿Como los quiere ordenados de forma ascendente(asc) o descendente(desc)?")
+                    resultado_busqueda = buscar_y_guarda(lista_dream_team,tipo_de_estadistica,valor_elegido)
+                    jugadores_ordenados = ordenar(resultado_busqueda,tipo_de_estadistica,forma_de_ordenar)
+                    formato_armado = mostrar(jugadores_ordenados,tipo_de_estadistica)
+                    imprimir(formato_armado)      
+                    
+
             case "8":
-                    imprimir(calcular_promedio(remover_menor(lista_dream_team,jugador_mayor_menor_cantidad(lista_dream_team,
-                                                                                                       "promedio puntos por partido",
-                                                                                                       "menor")),
-                                                                                                       "promedio puntos por partido"))  
+                    tipo_de_estadistica = "promedio puntos por partido"
+                    sacar_al_peor = remover_menor(lista_dream_team)
+                    promedio_sin_el_peor = calcular_promedio(sacar_al_peor,tipo_de_estadistica)
+                    imprimir(promedio_sin_el_peor) 
+
             case "9":
                     imprimir(imprimir_menu_posiciones())
-                    respuesta_uno_nueve = pregunta("¿Cual es el valor que desea ingresar?.Puede ingresar 0 (cero) si desea que esten todos los jugadores")
-                    respuesta_dos_nueve = pregunta("¿Como los quiere ordenados de forma ascendente(asc) o descendente(desc)?")
-                    imprimir(ordenados_posicion_cancha(buscar_y_comparar(lista_dream_team,"porcentaje tiros de campo",respuesta_uno_nueve),
-                                                                        respuesta_dos_nueve))
+                    valor_ingresado = pregunta("""Ingrese un valor,se mostraran los jugadores que hayan tenido un porcentaje de tiros de campo superior a dicho numero.
+                    Puede ingresar 0 (cero) si desea que esten todos los jugadores.""")
+                    forma_de_ordenar = pregunta("¿Como los quiere ordenados de forma ascendente(asc) o descendente(desc)?")
+                    resultado_busqueda = buscar_y_guarda(lista_dream_team,"porcentaje tiros de campo",valor_ingresado)
+                    jugadores_ordenados = ordenados_posicion_cancha(resultado_busqueda,forma_de_ordenar)
+                    imprimir(jugadores_ordenados)
+
             case "10":
                 break
 examen_app()
